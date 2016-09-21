@@ -13,3 +13,6 @@ class QiubaiItem(scrapy.Item):
     # name = scrapy.Field()
     author = scrapy.Field()
     content = scrapy.Field()
+    comment_author = scrapy.Field()
+    comment_content = scrapy.Field()
+    
