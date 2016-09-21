@@ -15,23 +15,24 @@ class QiushibaikeSpider(scrapy.Spider):
         for div in divs:
             items = QiubaiItem()
             items['author'] = div.xpath('./div[@class = "author clearfix"]/a[2]/h2/text()').extract()[0]
-            items['content'] = div.xpath('./a/div[@class = "content"]/text()').extract()[0]
+            items['content'] = div.xpath('./a/div[@class ="content"]/span/text()').extract()[0]
             url = div.xpath('./a[@class= "contentHerf"]/@href').extract()[0]
             callbackUrl = response.urljoin(url)
-            print callbackUrl, items['author'],items['content'] 
+            print callbackUrl
             yield Request(url = callbackUrl,callback = self.parse_comment, meta = {'item':items})
 
     def parse_comment(self,response):
-        
+        items = response.meta['item']
         divs = response.xpath('//div[@class = "comments-table"]')
+        comments =[]
         for div in divs:
-            items = response.meta['item']
+            
             comment_author = div.xpath('./a/div/div[@class ="cmt-name"]/text()').extract()[0]
             comment_content = div.xpath('./a/div[@class = "main-text"]/text()').extract()[0]
             comment = {'comment_author':comment_author,'comment_content':comment_content}
-            items['comment'] = comment
-            print comment
-            yield items
+            comments.append(comment)
+        items['comment'] = comments
+        yield items
             
             
 
